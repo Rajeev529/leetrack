@@ -14,24 +14,14 @@ def index(request):
 def search_page(request):
     return render(request,"search_page.html")
 
+from urllib.parse import unquote
+
 def company_questions(request, company_name):
     all_file = "5. All.csv"
-    
     comp = get_companies_images(request)
 
-    # ✅ Normalize slug (from URL)
-    slug = company_name.lower().replace("-", "")
-
-    # ✅ Map to correct folder name
-    COMPANY_MAP = {
-        "blackrock": "BlackRock",
-        "blackstone": "BlackStone",
-        "amazon": "Amazon",
-        "google": "Google",
-        # add more if needed
-    }
-
-    company_name = COMPANY_MAP.get(slug, company_name)
+    # ✅ FIX: Decode URL (handle double encoding)
+    company_name = unquote(unquote(company_name))
 
     df = read_company_csv(company_name, all_file)
     df = df.to_dict(orient='records')
