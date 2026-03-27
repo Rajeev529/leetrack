@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Study | LeetTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0f172a; color: white; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .row-solved { opacity: 0.6; background: rgba(16, 185, 129, 0.05) !important; }
+        .filter-active { background: #3b82f6 !important; border-color: #3b82f6 !important; }
+        .difficulty-easy { color: #10b981; }
+        .difficulty-med { color: #f59e0b; }
+        .difficulty-hard { color: #ef4444; }
+        .p-4{
+            color: white;
+        }
+        #title{
+            color: orange;
+        }
+        #block1{
+            background-color: #0d2658;
+        }
+        #questionTable{
+            cursor: pointer;
+        }
+        #block2{
+            border-radius: 18px;
+            margin: 26px;
+            font-size: 36px;
+        }
+        .linkroadmap{
+            background: dodgerblue;
+            padding: 14px;
+            border-radius: 45px;
+            margin: 16px;
+        }
+        #block3{
+            margin-top: 17px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+            <div id="challenge-60" class="glass p-6 rounded-3xl border-l-4 border-purple-500 relative overflow-hidden group">
+                <div id="block1" class="flex justify-between items-start z-10 relative">
+                    <img style="max-width: 17%;" src="{{imgs}}" alt="">
+                    <div>
+                        <h3 id="block2" class="text-xl font-black">{{company_name}}</h3>
+                    </div>
+    
+                </div>
+                
+            </div>
+
+            <div id="challenge-30" class="glass p-6 rounded-3xl border-l-4 border-orange-500 relative overflow-hidden group">
+                <div id="block1" class="flex justify-between items-start z-10 relative">
+                    <div id="block3" >
+                        <h3 class="text-xl font-black">30 Days Challenge</h3>
+                        <p class="text-xs text-slate-400 mt-1">Focused sprint for core patterns.</p>
+                    </div>
+                    <a class="linkroadmap" href="{% url 'roadmap_30' company_name %}">Roadmap 30</a>
+                </div>
+                
+            </div>
+
+            
+        </div>
+
+        <div class="flex items-center gap-3 mb-6 overflow-x-auto pb-2">
+            <button onclick="filterCategory('All', this)" class="category-btn filter-active px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold whitespace-nowrap">All Topics</button>
+            <!-- <button onclick="filterCategory('Arrays', this)" class="category-btn px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold whitespace-nowrap">Arrays</button>
+            <button onclick="filterCategory('DP', this)" class="category-btn px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold whitespace-nowrap">Dynamic Programming</button>
+            <button onclick="filterCategory('Strings', this)" class="category-btn px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold whitespace-nowrap">Strings</button>
+            <button onclick="filterCategory('Math', this)" class="category-btn px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold whitespace-nowrap">Math</button> -->
+        </div>
+
+        <div class="glass rounded-3xl overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-800/50 text-[10px] uppercase text-slate-500 font-bold">
+                    <tr>
+                        <th class="p-4">Question</th>
+                        <th class="p-4">Difficulty</th>
+                        <th class="p-4 text-right">Asked By</th>
+                    </tr>
+                </thead>
+                <tbody id="questionTable">
+                    {% for x in df %}
+                        <tr onclick="window.location='{{x.Link}}'" class="border-t border-slate-800 transition-all" data-category="Arrays">
+                            <td class="p-4">
+                                <div id="title" class="font-bold text-sm">{{x.Title}}</div>
+                                <div style="color: wheat;" class="text-[10px] text-slate-500">{{x.Topics}}</div>
+                            </td>
+                            {% if x.Difficulty == "HARD" %}
+                                <td class="text-red-500 font-bold">{{ x.Difficulty }}</td>
+                            {% elif x.Difficulty == "MEDIUM" %}
+                                <td class="text-yellow-500 font-bold">{{ x.Difficulty }}</td>
+                            {% else %}
+                                <td class="text-green-500 font-bold">{{ x.Difficulty }}</td>
+                            {% endif %}
+                            <td class="p-4 text-right">
+                                {{x.val}}+ companies
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Checkbox Status Logic
+        function toggleSolved(checkbox) {
+            const row = checkbox.closest('tr');
+            if(checkbox.checked) {
+                row.classList.add('row-solved');
+            } else {
+                row.classList.remove('row-solved');
+            }
+        }
+
+        // Category Filtering Logic
+        function filterCategory(category, btn) {
+            // Update active button state
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('filter-active'));
+            btn.classList.add('filter-active');
+
+            // Filter rows
+            const rows = document.querySelectorAll('#questionTable tr');
+            rows.forEach(row => {
+                if(category === 'All' || row.getAttribute('data-category') === category) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Start Challenge Logic
+        function startChallenge(days) {
+            const progress = document.getElementById(`progress-${days}`);
+            progress.style.width = '10%'; // Simulate start
+            alert(`Challenge for ${days} Days started! Track your progress in the Admin Dashboard.`);
+        }
+    </script>
+</body>
+</html>
