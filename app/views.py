@@ -16,15 +16,34 @@ def search_page(request):
 
 def company_questions(request, company_name):
     all_file = "5. All.csv"
-    comp=get_companies_images(request)
-    company_name = company_name.replace("-", " ").title()
-    # print("images",comp)
     
+    comp = get_companies_images(request)
+
+    # ✅ Normalize slug (from URL)
+    slug = company_name.lower().replace("-", "")
+
+    # ✅ Map to correct folder name
+    COMPANY_MAP = {
+        "blackrock": "BlackRock",
+        "blackstone": "BlackStone",
+        "amazon": "Amazon",
+        "google": "Google",
+        # add more if needed
+    }
+
+    company_name = COMPANY_MAP.get(slug, company_name)
+
     df = read_company_csv(company_name, all_file)
     df = df.to_dict(orient='records')
+
     for x in df:
-        x['val'] = count.get(x["Title"], 0)  # ✅ FIXED
-    return render(request, "qlist.html", {"df": df,"company_name": company_name, "imgs":comp.get(company_name)})
+        x['val'] = count.get(x["Title"], 0)
+
+    return render(request, "qlist.html", {
+        "df": df,
+        "company_name": company_name,
+        "imgs": comp.get(company_name)
+    })
 def roadmap_30(request, company_name):
     all_file = "2. Three Months.csv"
     comp=get_companies_images(request)
