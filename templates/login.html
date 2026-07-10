@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Leettrack{% endblock %}
+
+{% block content %}
+    <div class="max-w-md mx-auto mt-20 glass p-8 rounded-3xl shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-black text-white mb-2">Welcome Back</h1>
+            <p class="text-slate-400 text-sm">Log in to your progress tracker</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Email Address</label>
+                <input type="email" name="email" required
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500 transition-all"
+                       placeholder="john@example.com">
+            </div>
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Password</label>
+                <input type="password" name="password" required
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500 transition-all"
+                       placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-slate-500 text-sm">Don't have an account?
+                <a href="/signup/" class="text-blue-400 font-bold hover:text-blue-300 transition-colors">Sign up here</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Leettrack{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffa116;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+        }
+        .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col">
+    <nav class="glass sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="location.href='/'">
+            <span class="bg-blue-600 px-2 py-1 rounded-lg font-bold text-xs text-white">LT</span>
+            <span class="font-bold tracking-tight text-xl">Leettrack</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/" class="text-slate-400 hover:text-white transition-colors font-medium">Home</a>
+            <a href="/search/" class="text-slate-400 hover:text-white transition-colors font-medium">Search</a>
+            {% if user.is_authenticated %}
+                <a href="/profile/" class="text-slate-400 hover:text-white transition-colors font-medium">Profile</a>
+                <a href="/logout/" class="text-slate-400 hover:text-white transition-colors font-medium">Logout</a>
+            {% else %}
+                <a href="/login/" class="text-slate-400 hover:text-white transition-colors font-medium">Login</a>
+                <a href="/signup/" class="bg-blue-600 px-4 py-2 rounded-lg text-white font-bold text-sm hover:bg-blue-700 transition-colors">Signup</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="flex-1">
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-6 pt-6">
+                {% for message in messages %}
+                    <div class="p-4 mb-4 rounded-lg text-center {% if message.tags == 'success' %}bg-green-600{% elif message.tags == 'error' %}bg-red-600{% else %}bg-blue-600{% endif %} text-white">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="text-center py-6 text-slate-500 text-sm border-t border-slate-800 bg-slate-900/50">
+        &copy; 2026 Leettrack - Industry Standard Tracking
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
